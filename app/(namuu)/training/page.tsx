@@ -12,7 +12,7 @@ export const metadata = { title: "Хумсны сургалт" };
 export default function TrainingPage() {
   return (
     <>
-      <header className="mx-auto grid w-full max-w-6xl items-end gap-10 px-5 pb-14 pt-14 sm:pt-20 lg:grid-cols-[1.2fr_1fr]">
+      <header className="mx-auto grid w-full max-w-6xl items-end gap-8 px-5 pb-10 pt-10 sm:gap-10 sm:pb-14 sm:pt-20 lg:grid-cols-[1.2fr_1fr]">
         <div>
           <p className="eyebrow">Nail Training</p>
           <h1 className="mt-5 font-display text-5xl font-medium leading-[1.05] text-foreground sm:text-6xl">
@@ -35,10 +35,10 @@ export default function TrainingPage() {
         />
       </header>
 
-      <section className="mx-auto w-full max-w-6xl px-5 pb-20">
+      <section className="mx-auto w-full max-w-6xl px-5 pb-14 sm:pb-20">
         <ul className="grid gap-5 lg:grid-cols-3">
           {courses.map((c, i) => (
-            <li key={c.id} className="flex flex-col rounded-[1.75rem] border border-border/70 bg-surface p-7 sm:p-8">
+            <li key={c.id} className="flex flex-col rounded-[1.75rem] border border-border/70 bg-surface p-6 sm:p-8">
               <div className="flex items-center justify-between gap-3">
                 <span className="font-display text-sm text-accent-ink">0{i + 1}</span>
                 <span className="rounded-full bg-primary-soft px-3 py-1 text-[11px] font-medium text-primary">
@@ -48,7 +48,7 @@ export default function TrainingPage() {
               <h2 className="mt-6 font-display text-3xl font-medium leading-tight text-foreground">{c.name}</h2>
               <p className="mt-3 text-sm leading-6 text-muted">{c.summary}</p>
 
-              <p className="mt-7 text-xs font-medium uppercase tracking-[0.16em] text-foreground/70">Хөтөлбөр</p>
+              <p className="mt-5 text-xs font-medium uppercase sm:mt-7 tracking-[0.16em] text-foreground/70">Хөтөлбөр</p>
               <ul className="mt-3 flex-1 space-y-2.5 text-sm text-foreground/85">
                 {c.topics.map((t) => (
                   <li key={t} className="flex gap-3">
@@ -58,7 +58,7 @@ export default function TrainingPage() {
                 ))}
               </ul>
 
-              <dl className="mt-8 grid grid-cols-3 gap-3 border-t border-border/70 pt-5 text-xs">
+              <dl className="mt-6 grid grid-cols-3 gap-3 border-t sm:mt-8 border-border/70 pt-5 text-xs">
                 <Info label="Хугацаа" value={c.duration} />
                 <Info label="Төлбөр" value={c.price === null ? null : money(c.price)} />
                 <Info label="Эхлэх" value={c.nextStart} />
@@ -69,7 +69,7 @@ export default function TrainingPage() {
       </section>
 
       <section id="enquiry" className="scroll-mt-24 border-t border-border/70 bg-surface-2/60">
-        <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-20 lg:grid-cols-[1fr_1.1fr]">
+        <div className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-14 sm:gap-12 sm:py-20 lg:grid-cols-[1fr_1.1fr]">
           <div>
             <p className="eyebrow">Лавлагаа</p>
             <h2 className="mt-4 font-display text-4xl font-medium leading-tight text-foreground sm:text-5xl">

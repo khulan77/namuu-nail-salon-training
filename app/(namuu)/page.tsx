@@ -93,11 +93,11 @@ export default function HomePage() {
       </section>
 
       {/* ── Онцлох үйлчилгээ ─────────────────────────────────── */}
-      <section className="mx-auto w-full max-w-6xl px-5 py-20 sm:py-28">
-        <div className="flex flex-wrap items-end justify-between gap-6">
+      <section className="mx-auto w-full max-w-6xl px-5 py-14 sm:py-20 lg:py-28">
+        <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
           <div>
             <p className="eyebrow">Үйлчилгээ</p>
-            <h2 className="mt-4 font-display text-4xl font-medium leading-tight text-foreground sm:text-5xl">
+            <h2 className="mt-3 font-display text-[2.125rem] sm:mt-4 font-medium leading-tight text-foreground sm:text-5xl">
               Онцлох үйлчилгээ
             </h2>
           </div>
@@ -109,36 +109,44 @@ export default function HomePage() {
           </div>
         </div>
 
-        <ul className="mt-12 grid gap-px overflow-hidden rounded-[1.75rem] border border-border/70 bg-border/70 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Гар утсанд тусдаа цагаан карт (Үйлчилгээ хуудастай ижил), том дэлгэцэд 4 баганат хүснэгт */}
+        <ul className="mt-6 space-y-3 sm:mt-12 sm:grid sm:grid-cols-2 sm:gap-px sm:space-y-0 sm:overflow-hidden sm:rounded-[1.75rem] sm:border sm:border-border/70 sm:bg-border/70 lg:grid-cols-4">
           {featured.map((s, i) => (
-            <li key={s.id} className="group flex flex-col bg-background p-7 transition-colors hover:bg-surface">
-              <span className="font-display text-sm text-accent-ink">0{i + 1}</span>
-              <h3 className="mt-6 font-display text-2xl font-medium leading-snug text-foreground">{s.name}</h3>
-              <p className="mt-3 flex-1 text-sm leading-6 text-muted">{s.description}</p>
-              <p className="mt-6 text-sm text-foreground">
-                {durationLabel(s.durationMin)} <span className="mx-1.5 text-border">|</span> {money(s.price)}
-              </p>
-              <Link
-                href={`/book?service=${s.id}`}
-                className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-primary"
-              >
-                Захиалах
-                <span aria-hidden className="transition-transform group-hover:translate-x-1">
-                  →
-                </span>
-              </Link>
+            <li
+              key={s.id}
+              className="flex flex-col rounded-2xl border border-border/70 bg-surface p-4 sm:rounded-none sm:border-0 sm:bg-background sm:p-7 sm:transition-colors sm:hover:bg-surface"
+            >
+              <span className="hidden font-display text-sm text-accent-ink sm:block">0{i + 1}</span>
+              <h3 className="text-base font-medium text-foreground sm:mt-6 sm:font-display sm:text-2xl sm:leading-snug">
+                {s.name}
+              </h3>
+              <p className="mt-1 flex-1 text-sm leading-6 text-muted sm:mt-3">{s.description}</p>
+              <div className="mt-3 flex items-center justify-between gap-4 border-t border-border/60 pt-3 sm:mt-6 sm:block sm:border-0 sm:pt-0">
+                <p className="text-sm">
+                  <span className="font-semibold text-foreground sm:font-normal">{money(s.price)}</span>
+                  <span className="text-muted"> · </span>
+                  <span className="text-xs text-muted sm:text-sm">{durationLabel(s.durationMin)}</span>
+                </p>
+                <Link
+                  href={`/book?service=${s.id}`}
+                  className="btn btn-primary min-h-10 shrink-0 px-5 sm:mt-4"
+                  aria-label={`${s.name} — цаг захиалах`}
+                >
+                  Захиалах
+                </Link>
+              </div>
             </li>
           ))}
         </ul>
       </section>
 
       {/* ── Портфолио ────────────────────────────────────────── */}
-      <section className="bg-surface-2/60 py-20 sm:py-28">
+      <section className="bg-surface-2/60 py-14 sm:py-20 lg:py-28">
         <div className="mx-auto w-full max-w-6xl px-5">
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
               <p className="eyebrow">Портфолио</p>
-              <h2 className="mt-4 font-display text-4xl font-medium leading-tight text-foreground sm:text-5xl">
+              <h2 className="mt-3 font-display text-[2.125rem] sm:mt-4 font-medium leading-tight text-foreground sm:text-5xl">
                 Nail art бүтээлүүд
               </h2>
             </div>
@@ -147,7 +155,7 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="mt-12 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 lg:grid-rows-2">
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:mt-12 sm:gap-4 lg:grid-cols-4 lg:grid-rows-2">
             {portfolio.slice(3, 8).map((p, i) => (
               <PhotoFrame
                 key={p.id}
@@ -166,7 +174,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Танилцуулга ──────────────────────────────────────── */}
-      <section className="mx-auto grid w-full max-w-6xl items-center gap-12 px-5 py-20 sm:py-28 lg:grid-cols-2 lg:gap-20">
+      <section className="mx-auto grid w-full max-w-6xl items-center gap-8 px-5 py-14 sm:gap-12 sm:py-20 lg:grid-cols-2 lg:gap-20 lg:py-28">
         <PhotoFrame
           id="about"
           look={aboutPhoto.look}
@@ -177,17 +185,17 @@ export default function HomePage() {
         />
         <div>
           <p className="eyebrow">Бидний тухай</p>
-          <h2 className="mt-4 font-display text-4xl font-medium leading-tight text-foreground sm:text-5xl">
+          <h2 className="mt-3 font-display text-[2.125rem] sm:mt-4 font-medium leading-tight text-foreground sm:text-5xl">
             Хумсны үйлчилгээ ба сургалт —<em className="font-normal text-primary"> нэг дор</em>
           </h2>
-          <p className="mt-6 text-base leading-8 text-muted">
+          <p className="mt-4 text-base leading-7 text-muted sm:mt-6 sm:leading-8">
             {brand.since} оноос хойш {brand.name} нь маникюр, nail art, хумсны үйлчилгээг санал болгохоос гадна хумсны урлагт суралцах хүсэлтэй
             хүмүүст зориулсан сургалт явуулдаг.
           </p>
           <p className="mt-4">
             <DemoTag>Танилцуулга текстийг Namuu-тай хамт бичнэ</DemoTag>
           </p>
-          <dl className="mt-10 grid grid-cols-3 gap-6 border-t border-border/70 pt-8">
+          <dl className="mt-8 grid grid-cols-3 gap-4 border-t border-border/70 pt-6 sm:mt-10 sm:gap-6 sm:pt-8">
             {[
               ["Маникюр", "ба педикюр"],
               ["Nail art", "дизайн"],
@@ -204,13 +212,13 @@ export default function HomePage() {
 
       {/* ── Сургалт ──────────────────────────────────────────── */}
       <section className="px-3 sm:px-5">
-        <div className="mx-auto grid w-full max-w-6xl gap-10 overflow-hidden rounded-[2rem] bg-primary px-7 py-14 text-white sm:px-12 sm:py-20 lg:grid-cols-[1.3fr_1fr] lg:items-end">
+        <div className="mx-auto grid w-full max-w-6xl gap-6 overflow-hidden rounded-[2rem] bg-primary px-6 py-10 text-white sm:gap-10 sm:px-12 sm:py-20 lg:grid-cols-[1.3fr_1fr] lg:items-end">
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.18em] text-white/80">Nail Training</p>
-            <h2 className="mt-4 font-display text-4xl font-medium leading-tight sm:text-5xl">
+            <h2 className="mt-3 font-display text-[2.125rem] sm:mt-4 font-medium leading-tight sm:text-5xl">
               Хумсны урлагт <em className="font-normal text-primary-soft">суралцах</em>
             </h2>
-            <p className="mt-5 max-w-lg text-sm leading-7 text-white/85 sm:text-base">
+            <p className="mt-4 max-w-lg text-sm leading-6 text-white/85 sm:mt-5 sm:text-base sm:leading-7">
               Анхан шатнаас эхлээд уртасгалт, nail art хүртэл. Сургалтын хөтөлбөр, хуваарийн талаар дэлгэрэнгүй
               мэдээлэл аваарай.
             </p>
@@ -224,24 +232,27 @@ export default function HomePage() {
       </section>
 
       {/* ── Захиалах алхам ───────────────────────────────────── */}
-      <section className="mx-auto w-full max-w-6xl px-5 py-20 sm:py-28">
-        <p className="eyebrow text-center">Онлайн захиалга</p>
-        <h2 className="mt-4 text-center font-display text-4xl font-medium text-foreground sm:text-5xl">
+      <section className="mx-auto w-full max-w-6xl px-5 py-14 sm:py-20 lg:py-28">
+        <p className="eyebrow sm:text-center">Онлайн захиалга</p>
+        <h2 className="mt-3 font-display text-[2.125rem] font-medium leading-tight text-foreground sm:mt-4 sm:text-center sm:text-5xl">
           Гурван алхамд цагаа аваарай
         </h2>
-        <ol className="mt-14 grid gap-10 sm:grid-cols-3 sm:gap-8">
+        {/* Гар утсанд нягт жагсаалт (дугаар зүүн талд), том дэлгэцэд 3 багана */}
+        <ol className="mt-7 divide-y divide-border/70 border-y border-border/70 sm:mt-14 sm:grid sm:grid-cols-3 sm:gap-8 sm:divide-y-0 sm:border-0">
           {steps.map((s, i) => (
-            <li key={s.title} className="text-center">
-              <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-accent font-display text-xl text-accent-ink">
+            <li key={s.title} className="flex items-start gap-4 py-4 sm:block sm:py-0 sm:text-center">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-accent font-display text-lg text-accent-ink sm:mx-auto sm:h-14 sm:w-14 sm:text-xl">
                 {i + 1}
               </span>
-              <h3 className="mt-5 font-display text-2xl font-medium text-foreground">{s.title}</h3>
-              <p className="mx-auto mt-2 max-w-[16rem] text-sm leading-6 text-muted">{s.text}</p>
+              <span className="min-w-0">
+                <h3 className="font-display text-xl font-medium text-foreground sm:mt-5 sm:text-2xl">{s.title}</h3>
+                <p className="mt-1 text-sm leading-6 text-muted sm:mx-auto sm:mt-2 sm:max-w-[16rem]">{s.text}</p>
+              </span>
             </li>
           ))}
         </ol>
-        <div className="mt-12 text-center">
-          <Link href="/book" className="btn btn-primary">
+        <div className="mt-7 sm:mt-12 sm:text-center">
+          <Link href="/book" className="btn btn-primary w-full sm:w-auto">
             Цаг захиалах
           </Link>
         </div>
@@ -249,13 +260,13 @@ export default function HomePage() {
 
       {/* ── Холбоо барих ─────────────────────────────────────── */}
       <section id="contact" className="scroll-mt-24 border-t border-border/70 bg-surface-2/60">
-        <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-20 sm:py-24 lg:grid-cols-2">
+        <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-14 sm:py-20 lg:grid-cols-2 lg:py-24">
           <div>
             <p className="eyebrow">Холбоо барих</p>
-            <h2 className="mt-4 font-display text-4xl font-medium leading-tight text-foreground sm:text-5xl">
+            <h2 className="mt-3 font-display text-[2.125rem] sm:mt-4 font-medium leading-tight text-foreground sm:text-5xl">
               Биднийг зорин ирээрэй
             </h2>
-            <dl className="mt-10 divide-y divide-border/70 border-y border-border/70 text-sm">
+            <dl className="mt-6 divide-y divide-border/70 border-y border-border/70 text-sm sm:mt-10">
               <Row label="Хаяг">{brand.address ?? <Pending />}</Row>
               <Row label="Утас">
                 {brand.phone ? <a href={`tel:${brand.phone.replace(/\s/g, "")}`}>{brand.phone}</a> : <Pending />}
@@ -275,12 +286,14 @@ export default function HomePage() {
                 </span>
               </Row>
             </dl>
-            <Link href="/book" className="btn btn-primary mt-10">
+            {/* Дээрх "Захиалах алхам" хэсэгт товч бий — гар утсанд давхардуулахгүй */}
+            <Link href="/book" className="btn btn-primary mt-10 hidden sm:inline-flex">
               Цаг захиалах
             </Link>
           </div>
 
-          <div className="relative flex min-h-72 items-center justify-center overflow-hidden rounded-[2rem] border border-dashed border-accent/60 bg-background">
+          {/* Хаяг тодорхойгүй тул хоосон газрын зургийг гар утсанд нуух */}
+          <div className="relative hidden min-h-72 items-center justify-center overflow-hidden rounded-[2rem] border border-dashed border-accent/60 bg-background lg:flex">
             <div className="text-center">
               <p className="font-display text-2xl text-foreground/70">Газрын зураг</p>
               <p className="mt-2 text-xs text-muted">Хаяг баталгаажсаны дараа энд байршил харагдана</p>
@@ -294,9 +307,9 @@ export default function HomePage() {
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-1 py-4 sm:flex-row sm:gap-6">
-      <dt className="w-36 shrink-0 text-muted">{label}</dt>
-      <dd className="text-foreground">{children}</dd>
+    <div className="flex items-baseline justify-between gap-4 py-3.5 sm:justify-start sm:gap-6 sm:py-4">
+      <dt className="shrink-0 text-muted sm:w-36">{label}</dt>
+      <dd className="text-right text-foreground sm:text-left">{children}</dd>
     </div>
   );
 }

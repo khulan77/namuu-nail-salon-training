@@ -7,7 +7,7 @@ export const metadata = { title: "Портфолио" };
 export default function PortfolioPage() {
   return (
     <>
-      <header className="mx-auto w-full max-w-6xl px-5 pb-10 pt-14 sm:pt-20">
+      <header className="mx-auto w-full max-w-6xl px-5 pb-8 pt-10 sm:pb-10 sm:pt-20">
         <p className="eyebrow">Портфолио</p>
         <h1 className="mt-5 font-display text-5xl font-medium leading-[1.05] text-foreground sm:text-6xl">
           Nail art <em className="font-normal text-primary">бүтээлүүд</em>
@@ -27,12 +27,12 @@ export default function PortfolioPage() {
         )}
       </header>
 
-      <div className="mx-auto w-full max-w-6xl px-5 pb-20">
+      <div className="mx-auto w-full max-w-6xl px-5 pb-14 sm:pb-20">
         <Gallery />
       </div>
 
       <section className="border-t border-border/70 bg-surface-2/60">
-        <div className="mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-5 py-16 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mx-auto flex w-full max-w-6xl flex-col items-start gap-5 px-5 py-10 sm:flex-row sm:py-16 sm:items-center sm:justify-between">
           <h2 className="font-display text-3xl font-medium text-foreground sm:text-4xl">Таалагдсан дизайнаа захиалаарай</h2>
           <Link href="/book" className="btn btn-primary">
             Цаг захиалах

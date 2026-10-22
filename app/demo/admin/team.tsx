@@ -2,7 +2,7 @@
 
 import { money } from "./demo-data";
 import type { DemoSettings } from "../demo-store";
-import { PERMISSIONS, ROLE_LABEL, accounts, type Role } from "./roles";
+import { PERMISSIONS, ROLE_LABEL, ROLE_SHORT, accounts, type Role } from "./roles";
 
 /* ── Ажилтан ба эрх ───────────────────────────────────────────────── */
 
@@ -60,13 +60,15 @@ export function Team({
 
       <h2 className="mt-10 font-display text-2xl text-foreground">Эрхийн хүснэгт</h2>
       <div className="card mt-4 overflow-x-auto">
-        <table className="w-full min-w-[32rem] text-left text-sm">
+        {/* Гар утсанд эрхийн товч нэр — 3 багана дэлгэцэнд багтана */}
+        <table className="w-full text-left text-sm sm:min-w-[32rem]">
           <thead className="border-b border-border/70 text-xs text-muted">
             <tr>
-              <th className="px-5 py-3 font-medium">Үйлдэл</th>
+              <th className="px-4 py-3 font-medium sm:px-5">Үйлдэл</th>
               {roles.map((r) => (
-                <th key={r} className="px-3 py-3 text-center font-medium">
-                  {ROLE_LABEL[r]}
+                <th key={r} className="px-1.5 py-3 text-center font-medium sm:px-3">
+                  <span className="sm:hidden">{ROLE_SHORT[r]}</span>
+                  <span className="hidden sm:inline">{ROLE_LABEL[r]}</span>
                 </th>
               ))}
             </tr>
@@ -74,9 +76,9 @@ export function Team({
           <tbody className="divide-y divide-border/60">
             {PERMISSIONS.map((p) => (
               <tr key={p.label}>
-                <td className="px-5 py-2.5 text-foreground">{p.label}</td>
+                <td className="px-4 py-2.5 leading-5 text-foreground sm:px-5">{p.label}</td>
                 {roles.map((r) => (
-                  <td key={r} className="px-3 py-2.5 text-center">
+                  <td key={r} className="px-1.5 py-2.5 text-center sm:px-3">
                     {p.roles.includes(r) ? (
                       <span className="font-semibold text-emerald-700" aria-label="Тийм">
                         ✓
@@ -94,7 +96,7 @@ export function Team({
         </table>
       </div>
       <p className="mt-4 text-xs leading-5 text-muted">
-        Демо: зүүн доод талын “Нэвтэрсэн” сонголтоор эрх бүрээр системийг үзэж болно. Жинхэнэ системд Админ ба Мастер
+        Демо: “Нэвтэрсэн (демо)” сонголтоор (утсан дээр дээд талд) эрх бүрээр системийг үзэж болно. Жинхэнэ системд Админ ба Мастер
         эрх бэлэн байгаа; Ресепшн эрх ба ирцийн бүртгэлийг нэмэхэд өгөгдлийн сангийн өөрчлөлт шаардлагатай.
       </p>
     </div>

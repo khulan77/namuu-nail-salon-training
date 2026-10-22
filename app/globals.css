@@ -410,6 +410,18 @@ h3 em {
 }
 .animate-fade-up { animation: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
+/* Гар утасны хажуугийн цэс (админы демо) — баруун талаас гулсаж орж ирнэ */
+@keyframes drawer-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-drawer-in { animation: drawer-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-fade-in { animation: fade-in 0.25s ease both; }
+
 
 /*
   Гар утсанд бүх талбар 16px. Үүнээс жижиг байвал iOS Safari талбар дээр

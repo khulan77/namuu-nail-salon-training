@@ -197,7 +197,7 @@ export function Revenue({ today, nowMin, bookings }: { today: Date; nowMin: numb
       </div>
 
       <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Tile label="Орлого" value={money(total)}>
+        <Tile label="Орлого" value={money(total)} wide>
           <Delta cur={total} prev={sum(prev)} label={PREV_LABEL[period]} />
         </Tile>
         <Tile label="Дууссан үйлчилгээ" value={String(cur.length)}>
@@ -223,11 +223,22 @@ export function Revenue({ today, nowMin, bookings }: { today: Date; nowMin: numb
   );
 }
 
-function Tile({ label, value, children }: { label: string; value: string; children: React.ReactNode }) {
+function Tile({
+  label,
+  value,
+  wide,
+  children,
+}: {
+  label: string;
+  value: string;
+  /** Гар утсанд бүтэн өргөн — гол тоо таслагдахгүй */
+  wide?: boolean;
+  children: React.ReactNode;
+}) {
   return (
-    <div className="rounded-2xl bg-surface-2/70 px-4 py-4">
+    <div className={`min-w-0 rounded-2xl bg-surface-2/70 px-4 py-4 ${wide ? "col-span-2 lg:col-span-1" : ""}`}>
       <p className="text-xs text-muted">{label}</p>
-      <p className="mt-1 truncate text-2xl font-semibold text-foreground">{value}</p>
+      <p className={`mt-1 font-semibold text-foreground ${wide ? "text-3xl lg:text-2xl" : "text-xl sm:text-2xl"}`}>{value}</p>
       <p className="mt-1">{children}</p>
     </div>
   );

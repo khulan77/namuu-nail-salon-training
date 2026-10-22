@@ -94,6 +94,8 @@ function AdminApp({ initialTab }: { initialTab: NavKey }) {
   const [query, setQuery] = useState("");
   const [incomingCount, setIncomingCount] = useState(0);
   const [toast, setToast] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
   const toastTimer = useRef<number | undefined>(undefined);
   const knownIds = useRef(new Set(bookings.map((b) => b.id)));
 
@@ -127,6 +129,21 @@ function AdminApp({ initialTab }: { initialTab: NavKey }) {
       }),
     [notify],
   );
+
+  // Гар утасны цэс нээлттэй үед: Esc-ээр хаагдана, ар талын хуудас гүйхгүй.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeMenu();
+    };
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [menuOpen, closeMenu]);
 
   // "Яг одоо" шугам хуанли дээр урагшилна.
   useEffect(() => {
@@ -232,119 +249,159 @@ function AdminApp({ initialTab }: { initialTab: NavKey }) {
   const badge = (key: NavKey) =>
     key === "bookings" ? pending.length : key === "training" ? openEnquiries.length : 0;
 
+  /** Хажуугийн цэсийн агуулга — өргөн дэлгэцийн aside ба гар утасны гулсах цэс хоёулаа ашиглана. */
+  const menuBody = (after?: () => void) => (
+    <>
+      <span className="mx-2 mt-3 inline-flex w-fit rounded-full border border-dashed border-accent-ink/50 px-3 py-1 text-[10px] font-semibold tracking-[0.16em] text-accent-ink">
+        ДЕМО · ЖИШЭЭ ӨГӨГДӨЛ
+      </span>
+      <UserSwitcher className="mx-2 mt-5" session={session} roleOf={roleOf} onChange={switchUser} />
+
+      <nav className="mt-5 flex flex-col gap-0.5" aria-label="Админ цэс">
+        {visibleNav.map((n) => (
+          <button
+            key={n.key}
+            type="button"
+            onClick={() => {
+              switchTab(n.key);
+              after?.();
+            }}
+            aria-current={current === n.key ? "page" : undefined}
+            className={`flex items-center gap-3 rounded-xl px-4 py-2 text-left text-sm transition-colors ${
+              current === n.key ? "bg-primary text-white" : "text-foreground/80 hover:bg-surface-2"
+            }`}
+          >
+            <NavIcon name={n.icon} />
+            <span className="flex-1">{n.label}</span>
+            {badge(n.key) > 0 && (
+              <span
+                className={`min-w-5 rounded-full px-1.5 py-0.5 text-center text-xs font-semibold ${
+                  current === n.key ? "bg-white text-primary" : "bg-primary text-white"
+                }`}
+              >
+                {badge(n.key)}
+              </span>
+            )}
+          </button>
+        ))}
+      </nav>
+
+      <div className="mt-auto space-y-2 pt-6">
+        <Link
+          href="/book"
+          target="_blank"
+          className="block rounded-xl bg-primary-soft px-4 py-3 text-xs leading-5 text-foreground transition-colors hover:bg-primary-soft/70"
+        >
+          <span className="font-medium text-primary">Сайтаас захиалга өгөх ↗</span>
+          <span className="mt-0.5 block text-[11px] text-muted">Шинэ табд нээгдэнэ — захиалга энд шууд орж ирнэ</span>
+        </Link>
+        {role !== "master" && (
+          <button
+            type="button"
+            onClick={() => {
+              simulateBooking();
+              after?.();
+            }}
+            className="w-full rounded-xl bg-surface-2 px-4 py-3 text-left text-xs leading-5 text-foreground transition-colors hover:bg-border/60"
+          >
+            <span className="font-medium">Жишээ захиалга нэмэх</span>
+            <span className="mt-0.5 block text-[11px] text-muted">Хуанли дээр хэрхэн гарахыг үзүүлнэ</span>
+          </button>
+        )}
+        <div className="flex items-center justify-between px-2 pt-2 text-xs text-muted">
+          <Link href="/demo" className="transition-colors hover:text-primary">
+            ← Демо удирдамж
+          </Link>
+          <button
+            type="button"
+            onClick={() => {
+              reset();
+              after?.();
+            }}
+            className="transition-colors hover:text-primary"
+          >
+            Демо шинэчлэх
+          </button>
+        </div>
+      </div>
+    </>
+  );
+
   return (
     <div className="flex min-h-screen flex-col bg-background lg:flex-row">
       {/* Хажуугийн цэс — өргөн дэлгэцэд */}
-      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-border bg-surface px-4 py-6 lg:flex">
+      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col overflow-y-auto border-r border-border bg-surface px-4 py-6 lg:flex">
         <Link href="/" className="px-2" aria-label="Сайт руу">
           <Wordmark />
         </Link>
-        <span className="mx-2 mt-3 inline-flex w-fit rounded-full border border-dashed border-accent-ink/50 px-3 py-1 text-[10px] font-semibold tracking-[0.16em] text-accent-ink">
-          ДЕМО · ЖИШЭЭ ӨГӨГДӨЛ
-        </span>
-        <UserSwitcher className="mx-2 mt-5" session={session} roleOf={roleOf} onChange={switchUser} />
-
-        <nav className="mt-5 flex flex-col gap-0.5" aria-label="Админ цэс">
-          {visibleNav.map((n) => (
-            <button
-              key={n.key}
-              type="button"
-              onClick={() => switchTab(n.key)}
-              aria-current={current === n.key ? "page" : undefined}
-              className={`flex items-center gap-3 rounded-xl px-4 py-2 text-left text-sm transition-colors ${
-                current === n.key ? "bg-primary text-white" : "text-foreground/80 hover:bg-surface-2"
-              }`}
-            >
-              <NavIcon name={n.icon} />
-              <span className="flex-1">{n.label}</span>
-              {badge(n.key) > 0 && (
-                <span
-                  className={`min-w-5 rounded-full px-1.5 py-0.5 text-center text-xs font-semibold ${
-                    current === n.key ? "bg-white text-primary" : "bg-primary text-white"
-                  }`}
-                >
-                  {badge(n.key)}
-                </span>
-              )}
-            </button>
-          ))}
-        </nav>
-
-        <div className="mt-auto space-y-2">
-          <Link
-            href="/book"
-            target="_blank"
-            className="block rounded-xl bg-primary-soft px-4 py-3 text-xs leading-5 text-foreground transition-colors hover:bg-primary-soft/70"
-          >
-            <span className="font-medium text-primary">Сайтаас захиалга өгөх ↗</span>
-            <span className="mt-0.5 block text-[11px] text-muted">Шинэ табд нээгдэнэ — захиалга энд шууд орж ирнэ</span>
-          </Link>
-          {role !== "master" && (
-            <button
-              type="button"
-              onClick={simulateBooking}
-              className="w-full rounded-xl bg-surface-2 px-4 py-3 text-left text-xs leading-5 text-foreground transition-colors hover:bg-border/60"
-            >
-              <span className="font-medium">Жишээ захиалга нэмэх</span>
-              <span className="mt-0.5 block text-[11px] text-muted">Хуанли дээр хэрхэн гарахыг үзүүлнэ</span>
-            </button>
-          )}
-          <div className="flex items-center justify-between px-2 pt-2 text-xs text-muted">
-            <Link href="/demo" className="transition-colors hover:text-primary">
-              ← Демо удирдамж
-            </Link>
-            <button type="button" onClick={reset} className="transition-colors hover:text-primary">
-              Демо шинэчлэх
-            </button>
-          </div>
-        </div>
+        {menuBody()}
       </aside>
 
-      {/* Утасны толгой ба цэс */}
+      {/* Утасны толгой — лого · хуудасны нэр · ☰ (цэс хажуугаас гулсаж гарна) */}
       <div className="sticky top-0 z-30 border-b border-border bg-surface/95 backdrop-blur lg:hidden">
-        <div className="flex items-center gap-3 px-4 py-2.5">
-          <Link href="/" aria-label="Сайт руу" className="min-w-0">
-            <Wordmark />
+        <div className="flex items-center gap-3 px-4 py-2">
+          <Link href="/" aria-label="Сайт руу" className="shrink-0">
+            <Wordmark size="sm" />
           </Link>
-          <span className="rounded-full border border-dashed border-accent-ink/50 px-2.5 py-1 text-[10px] font-semibold tracking-[0.14em] text-accent-ink">
-            ДЕМО
-          </span>
-          {role !== "master" && (
-            <button
-              type="button"
-              onClick={simulateBooking}
-              className="ml-auto flex h-10 items-center rounded-full bg-primary-soft px-3.5 text-xs font-medium text-primary"
-            >
-              + Жишээ захиалга
-            </button>
-          )}
-        </div>
-        <UserSwitcher className="px-4 pb-2.5" session={session} roleOf={roleOf} onChange={switchUser} />
-        <div className="no-scrollbar flex gap-2 overflow-x-auto px-4 pb-3">
-          {visibleNav.map((n) => (
-            <button
-              key={n.key}
-              type="button"
-              onClick={() => switchTab(n.key)}
-              aria-current={current === n.key ? "page" : undefined}
-              className={`flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-xs transition-colors ${
-                current === n.key ? "bg-primary text-white" : "bg-surface-2 text-foreground/80"
-              }`}
-            >
-              {n.label}
-              {badge(n.key) > 0 && (
-                <span
-                  className={`rounded-full px-1.5 text-[10px] font-semibold ${
-                    current === n.key ? "bg-white text-primary" : "bg-primary text-white"
-                  }`}
-                >
-                  {badge(n.key)}
-                </span>
-              )}
-            </button>
-          ))}
+          <div className="min-w-0 flex-1">
+            <p className="truncate font-display text-lg leading-tight text-foreground">
+              {nav.find((n) => n.key === current)?.label}
+            </p>
+            <p className="truncate text-[11px] text-muted">
+              Демо · {self.name} ({ROLE_SHORT[role]})
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setMenuOpen(true)}
+            aria-label="Цэс нээх"
+            aria-expanded={menuOpen}
+            aria-controls="admin-drawer"
+            className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary"
+          >
+            <span className="flex w-5 flex-col gap-[5px]" aria-hidden>
+              <span className="h-0.5 rounded-full bg-current" />
+              <span className="h-0.5 rounded-full bg-current" />
+              <span className="h-0.5 rounded-full bg-current" />
+            </span>
+            {pending.length > 0 && role !== "master" && (
+              <span className="absolute -right-0.5 -top-0.5 min-w-5 rounded-full bg-primary px-1 text-center text-[10px] font-semibold leading-5 text-white ring-2 ring-surface">
+                {pending.length}
+              </span>
+            )}
+          </button>
         </div>
       </div>
+
+      {menuOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Админ цэс">
+          <button
+            type="button"
+            tabIndex={-1}
+            aria-label="Цэс хаах"
+            onClick={closeMenu}
+            className="animate-fade-in absolute inset-0 bg-foreground/40 backdrop-blur-[2px]"
+          />
+          <div
+            id="admin-drawer"
+            className="animate-drawer-in absolute inset-y-0 right-0 flex w-[86%] max-w-xs flex-col overflow-y-auto bg-surface px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4 shadow-2xl"
+          >
+            <div className="flex items-center justify-between gap-3 px-2">
+              <Wordmark />
+              <button
+                type="button"
+                autoFocus
+                onClick={closeMenu}
+                aria-label="Цэс хаах"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface-2 text-xl leading-none text-foreground"
+              >
+                ×
+              </button>
+            </div>
+            {menuBody(closeMenu)}
+          </div>
+        </div>
+      )}
 
       {/* `min-w-0` — өргөн хуанли main-ийг сунгалгүй, өөрөө хажуу тийш гүйлгэнэ. */}
       <main className="min-w-0 flex-1 px-4 py-6 sm:px-8 sm:py-8">
@@ -922,20 +979,21 @@ function Customers({
         className="field"
       />
       <div className="card mt-4 overflow-x-auto">
-        <table className="w-full min-w-[40rem] text-left text-sm">
+        {/* Гар утсанд 3 багана — "Сүүлд", "Дараагийн" нь нэрийн доор шилжинэ */}
+        <table className="w-full text-left text-sm sm:min-w-[40rem]">
           <thead className="border-b border-border/70 text-xs text-muted">
             <tr>
-              <th className="px-5 py-3 font-medium">Үйлчлүүлэгч</th>
-              <th className="px-3 py-3 font-medium">Ирсэн</th>
-              <th className="px-3 py-3 font-medium">Нийт</th>
-              <th className="px-3 py-3 font-medium">Сүүлд</th>
-              <th className="px-5 py-3 font-medium">Дараагийн захиалга</th>
+              <th className="px-4 py-3 font-medium sm:px-5">Үйлчлүүлэгч</th>
+              <th className="px-2 py-3 text-right font-medium sm:px-3 sm:text-left">Ирсэн</th>
+              <th className="px-4 py-3 text-right font-medium sm:px-3 sm:text-left">Нийт</th>
+              <th className="hidden px-3 py-3 font-medium sm:table-cell">Сүүлд</th>
+              <th className="hidden px-5 py-3 font-medium sm:table-cell">Дараагийн захиалга</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border/60">
             {shown.map((r) => (
               <tr key={r.phone}>
-                <td className="px-5 py-3">
+                <td className="px-4 py-3 sm:px-5">
                   <span className="block font-medium text-foreground">
                     {r.name}
                     {r.online && (
@@ -948,11 +1006,20 @@ function Customers({
                     {r.phone}
                     {r.noShows > 0 && <span className="text-primary"> · {r.noShows} удаа ирээгүй</span>}
                   </span>
+                  {r.next && (
+                    <button
+                      type="button"
+                      onClick={() => onOpen(r.next!)}
+                      className="mt-1 block text-left text-xs text-primary hover:underline sm:hidden"
+                    >
+                      Дараагийн: {dayLabel(today, r.next.day)} · {hhmm(r.next.start)}
+                    </button>
+                  )}
                 </td>
-                <td className="px-3 py-3 tabular-nums">{r.visits}</td>
-                <td className="px-3 py-3 tabular-nums">{money(r.spent)}</td>
-                <td className="px-3 py-3 text-xs text-muted">{r.last ? dayLabel(today, r.last.day) : "—"}</td>
-                <td className="px-5 py-3">
+                <td className="px-2 py-3 text-right tabular-nums sm:px-3 sm:text-left">{r.visits}</td>
+                <td className="whitespace-nowrap px-4 py-3 text-right tabular-nums sm:px-3 sm:text-left">{money(r.spent)}</td>
+                <td className="hidden px-3 py-3 text-xs text-muted sm:table-cell">{r.last ? dayLabel(today, r.last.day) : "—"}</td>
+                <td className="hidden px-5 py-3 sm:table-cell">
                   {r.next ? (
                     <button
                       type="button"
@@ -1133,18 +1200,32 @@ function UserSwitcher({
   roleOf,
   onChange,
   className = "",
+  compact = false,
 }: {
   session: string;
   roleOf: (id: string) => Role;
   onChange: (id: string) => void;
   className?: string;
+  /** Гар утасны толгойд — гарчиггүй, намхан */
+  compact?: boolean;
 }) {
   return (
     <label className={`block ${className}`}>
-      <span className="mb-1 block text-[10px] font-medium uppercase tracking-[0.14em] text-muted">Нэвтэрсэн (демо)</span>
-      <select value={session} onChange={(e) => onChange(e.target.value)} className="field py-2 text-sm">
+      <span
+        className={
+          compact ? "sr-only" : "mb-1 block text-[10px] font-medium uppercase tracking-[0.14em] text-muted"
+        }
+      >
+        Нэвтэрсэн (демо)
+      </span>
+      <select
+        value={session}
+        onChange={(e) => onChange(e.target.value)}
+        className={`field text-sm ${compact ? "min-h-10 py-1.5" : "py-2"}`}
+      >
         {accounts.map((a) => (
           <option key={a.id} value={a.id}>
+            {compact ? "Демо: " : ""}
             {a.name} · {ROLE_SHORT[roleOf(a.id)]}
           </option>
         ))}

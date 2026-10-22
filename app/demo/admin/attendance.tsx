@@ -157,7 +157,12 @@ export function Attendance({
               </div>
 
               {canManage ? (
-                <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label={`${a.name} — ирц`}>
+                // Гар утсанд 4 товч нэг мөрөнд (тэмдэг дээр, нэр доор), том дэлгэцэд хэвтээ
+                <div
+                  className="mt-3 grid grid-cols-4 gap-1.5 sm:flex sm:flex-wrap sm:gap-2"
+                  role="group"
+                  aria-label={`${a.name} — ирц`}
+                >
                   {STATUSES.map((s) => (
                     <button
                       key={s}
@@ -169,15 +174,22 @@ export function Attendance({
                           time: s === "present" || s === "late" ? hhmm(nowMin) : undefined,
                         })
                       }
-                      className={`min-h-10 rounded-full px-4 text-xs font-medium transition-colors ${
+                      className={`flex min-h-12 min-w-0 flex-col items-center justify-center gap-0.5 rounded-xl px-1 text-[11px] font-medium transition-colors sm:min-h-10 sm:flex-row sm:gap-1 sm:rounded-full sm:px-4 sm:text-xs ${
                         mark?.status === s ? "bg-primary text-white" : "bg-surface-2 text-foreground/80 hover:bg-primary-soft"
                       }`}
                     >
-                      {ATTENDANCE_ICON[s]} {ATTENDANCE_LABEL[s]}
+                      <span aria-hidden className="text-sm leading-none sm:text-xs">
+                        {ATTENDANCE_ICON[s]}
+                      </span>
+                      <span className="truncate">{ATTENDANCE_LABEL[s]}</span>
                     </button>
                   ))}
                   {mark && (
-                    <button type="button" onClick={() => setMark(todayKey, a.id, null)} className="min-h-10 px-2 text-xs text-muted hover:text-primary">
+                    <button
+                      type="button"
+                      onClick={() => setMark(todayKey, a.id, null)}
+                      className="col-span-4 min-h-8 text-right text-xs text-muted hover:text-primary sm:min-h-10 sm:px-2"
+                    >
                       Арилгах
                     </button>
                   )}
@@ -219,31 +231,35 @@ export function Attendance({
       <p className="mt-1 text-xs text-muted">Өмнөх өдрүүдийн ирц жишээ өгөгдөл.</p>
 
       <div className="card mt-4 overflow-x-auto">
-        <table className="w-full min-w-[34rem] text-left text-sm">
+        {/* Гар утсанд баганын гарчиг тэмдгээр (доорх тайлбартай ижил) — хажуу тийш гүйлгэхгүй */}
+        <table className="w-full text-left text-sm sm:min-w-[34rem]">
           <thead className="border-b border-border/70 text-xs text-muted">
             <tr>
-              <th className="px-5 py-3 font-medium">Ажилтан</th>
+              <th className="px-4 py-3 font-medium sm:px-5">Ажилтан</th>
               {STATUSES.map((s) => (
-                <th key={s} className="px-3 py-3 text-right font-medium">
-                  {ATTENDANCE_LABEL[s]}
+                <th key={s} className="px-1.5 py-3 text-right font-medium sm:px-3" title={ATTENDANCE_LABEL[s]}>
+                  <span aria-hidden className="sm:hidden">
+                    {ATTENDANCE_ICON[s]}
+                  </span>
+                  <span className="sr-only sm:not-sr-only">{ATTENDANCE_LABEL[s]}</span>
                 </th>
               ))}
-              <th className="px-5 py-3 text-right font-medium">Ирц</th>
+              <th className="px-4 py-3 text-right font-medium sm:px-5">Ирц</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border/60 tabular-nums">
             {summary.map(({ account, counts, rate }) => (
               <tr key={account.id}>
-                <td className="px-5 py-3">
+                <td className="px-4 py-3 sm:px-5">
                   <span className="block font-medium text-foreground">{account.name}</span>
-                  <span className="block text-xs text-muted">{account.title}</span>
+                  <span className="hidden text-xs text-muted sm:block">{account.title}</span>
                 </td>
                 {STATUSES.map((s) => (
-                  <td key={s} className="px-3 py-3 text-right">
+                  <td key={s} className="px-1.5 py-3 text-right sm:px-3">
                     {counts[s]}
                   </td>
                 ))}
-                <td className="px-5 py-3 text-right font-medium text-foreground">{rate}%</td>
+                <td className="px-4 py-3 text-right font-medium text-foreground sm:px-5">{rate}%</td>
               </tr>
             ))}
           </tbody>

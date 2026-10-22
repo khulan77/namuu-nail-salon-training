@@ -11,9 +11,10 @@ export default function Wordmark({
   size = "md",
 }: {
   className?: string;
-  size?: "md" | "lg";
+  /** "sm" — зөвхөн дугуй лого (нарийн толгой хэсэгт) */
+  size?: "sm" | "md" | "lg";
 }) {
-  const badge = size === "lg" ? "h-16 w-16" : "h-11 w-11";
+  const badge = size === "lg" ? "h-16 w-16" : size === "sm" ? "h-10 w-10" : "h-11 w-11";
   return (
     <span className={`inline-flex items-center gap-3 leading-none ${className}`}>
       {brand.logoSrc && (
@@ -26,7 +27,7 @@ export default function Wordmark({
           className={`${badge} shrink-0 rounded-full shadow-[0_0_0_1px_var(--border)]`}
         />
       )}
-      <span className="flex flex-col gap-1" aria-label={brand.fullName}>
+      <span className={size === "sm" && brand.logoSrc ? "sr-only" : "flex flex-col gap-1"} aria-label={brand.fullName}>
         <span className="font-display text-[1.35rem] tracking-[0.14em] text-foreground">NAMUU</span>
         <span className="text-[0.58rem] font-medium uppercase tracking-[0.32em] text-accent-ink">Nail Salon</span>
       </span>
