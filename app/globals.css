@@ -1,0 +1,426 @@
+@import "tailwindcss";
+
+/*
+  Namuu NAIL — брэндийн өнгө, үсгийн токенууд.
+
+  Цайвар ягаан дэвсгэр, логоны тоосон сарнай (#c48c84) ба цөцгий өнгө.
+  Товч, холбоос нь логоны өнгөнөөс арай гүн сарнай — цагаан текст WCAG AA
+  (4.5:1)-ийг хангахын тулд. Брэндийн өнгө солигдвол ЗӨВХӨН энэ блокийг солино.
+*/
+:root {
+  --background: #fdf6f5; /* цайвар ягаан */
+  --surface: #ffffff;
+  --surface-2: #f9e9e7; /* зөөлөн ягаан */
+  --foreground: #3b2b2c; /* гүн хүрэн-ягаан */
+  --muted: #755e60;
+  --border: #f0dcd9;
+  --primary: #a25c64; /* тоосон сарнай — товч, холбоос */
+  --primary-hover: #8f4f57;
+  --primary-soft: #f6dfdc;
+  --accent: #c48c84; /* логоны сарнай — чимэглэл */
+  --accent-ink: #93605a; /* логоны сарнай — жижиг текст */
+  --cream: #efe5db; /* логоны дэвсгэр */
+  --chart: #b8576a; /* графикийн өнгө — dataviz validator-ыг давсан (chroma, contrast) */
+  --ring: #e4b9b4;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-cream: var(--cream);
+  --color-chart: var(--chart);
+  --color-ring: var(--ring);
+
+  --font-serif: var(--font-display);
+  --font-sans: var(--font-inter);
+
+  --radius-xl2: 1.25rem;
+}
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Утсан дээр хажуу тийш "нэмэлт" гүйлт үүсэхээс сэргийлнэ. `clip` нь
+     `hidden`-ээс ялгаатай нь sticky толгойг эвдэхгүй. */
+  overflow-x: clip;
+  /* Дэлгэц эргүүлэхэд iOS үсгийг өөрөө томруулахыг хориглоно. */
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+  min-width: 0;
+}
+
+/*
+  Гар утасны мэдрэгчид зориулсан ерөнхий тохиргоо: давхар товших үед дэлгэц
+  томрохгүй, дарахад саарал гэрэлтэлт гарахгүй.
+*/
+button, a, [role="button"], label, summary, input, select, textarea {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Урт үг (жишээ нь салоны нэр) хайрцгаа сунгаж, мөр давахаас сэргийлнэ. */
+h1, h2, h3, h4 {
+  overflow-wrap: break-word;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-serif), Georgia, serif;
+  /* Prata зөвхөн 400 жинтэй — хиймэл тод/налуу үсэг гаргахгүй. */
+  font-synthesis: none;
+}
+
+/* Prata-д налуу хэлбэр байхгүй — хиймэл налуу гаргахгүйн тулд онцлохыг өнгөөр илэрхийлнэ. */
+.font-display em,
+h1 em,
+h2 em,
+h3 em {
+  font-style: normal;
+}
+
+/* Subtle warm gradient used across hero/section backdrops */
+.bg-warm {
+  background:
+    radial-gradient(1200px 500px at 80% -10%, rgba(196, 140, 132, 0.14), transparent 60%),
+    radial-gradient(900px 500px at 0% 10%, rgba(239, 229, 219, 0.6), transparent 55%),
+    var(--background);
+}
+
+/*
+  Soft card — хайрцаг хайрцган дотор харагдахаас зайлсхийхийн тулд хатуу
+  хүрээний оронд бүдэг сүүдэр ашиглана.
+*/
+@layer components {
+  .card {
+    background: var(--surface);
+    border-radius: 1.5rem;
+    box-shadow:
+      0 1px 2px rgba(46, 39, 35, 0.04),
+      0 14px 34px -22px rgba(46, 39, 35, 0.35);
+  }
+
+  .card-hover {
+    transition:
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow:
+      0 2px 4px rgba(46, 39, 35, 0.04),
+      0 26px 50px -26px rgba(46, 39, 35, 0.45);
+  }
+
+  /*
+    Арк — тансаг салоны сайтуудын гол дүрслэл. Дээд тал нь бүтэн хагас дугуй,
+    доод тал нь зөөлөн булантай. Хайрцаг нэмэхгүйгээр зургийг өөрийг нь
+    хэлбэржүүлж, хуудсыг амьд харагдуулна.
+  */
+  .arch {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: 999px 999px 1.25rem 1.25rem;
+    background: var(--surface-2);
+  }
+
+  /* Гар утсанд хажуу тийш гүйлгэх мөр — гүйлгэгчийг нуухад ашиглана */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /*
+    Маягтын талбарууд. Өмнө нь хуудас бүр өөрийн дотоод <style>-д ижил
+    загварыг давтаж бичдэг байсныг нэг дор нэгтгэв.
+      .field — админ талын хүрээтэй талбар
+      .input — сайтын талын хүрээгүй зөөлөн талбар
+  */
+  .field,
+  .input {
+    width: 100%;
+    font-size: 1rem; /* iOS дээр 16px-ээс жижиг бол дарахад дэлгэц томордог */
+    line-height: 1.4;
+    outline: none;
+    /* Хуруугаар дарахад тохиромжтой өндөр (Apple/Google-ийн зөвлөмж 44px) */
+    min-height: 2.75rem;
+  }
+
+  .field {
+    border-radius: 0.75rem;
+    border: 1px solid var(--border);
+    background: var(--background);
+    padding: 0.625rem 0.875rem;
+  }
+  .field:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(217, 167, 173, 0.35);
+  }
+  .field:disabled {
+    opacity: 0.6;
+  }
+
+  .input {
+    border-radius: 0.75rem;
+    border: none;
+    background: color-mix(in srgb, var(--surface-2) 60%, transparent);
+    padding: 0.75rem 1rem;
+  }
+  .input:focus {
+    box-shadow: 0 0 0 2px var(--ring);
+  }
+
+  /* Дэлгэц том дээр талбарууд арай нягт харагдана. */
+  @media (min-width: 640px) {
+    .field,
+    .input {
+      font-size: 0.875rem;
+      min-height: 0;
+    }
+  }
+
+  /*
+    Гар утасны доод талын үйлдлийн мөр. Урт жагсаалт гүйлгэж байхад ч
+    "Үргэлжлүүлэх" товч дэлгэцийн доод талд наалдаж, гарт байнга байна.
+    `.card`-ын доод буланг дагаж мурийж, iPhone-ы "home" зураасны зайг тооцно.
+  */
+  .action-bar {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin: 1.5rem -1.25rem 0;
+    padding: 1rem 1.25rem max(1.25rem, env(safe-area-inset-bottom));
+    border-top: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+    border-radius: 0 0 1.5rem 1.5rem;
+    background: color-mix(in srgb, var(--surface) 95%, transparent);
+    backdrop-filter: blur(8px);
+  }
+
+  /* Дэлгэц том дээр наалдах шаардлагагүй — энгийн мөр болно. */
+  @media (min-width: 640px) {
+    .action-bar {
+      position: static;
+      margin: 2rem 0 0;
+      padding: 0;
+      border-top: 0;
+      border-radius: 0;
+      background: transparent;
+      backdrop-filter: none;
+    }
+  }
+
+  /*
+    Админы хуанлийн захиалгын блок. Тор дэлгэцэд багтахаар шахагддаг тул
+    блокны пиксель өндрийг урьдчилж мэдэхгүй — дотор нь юу харуулахыг блокны
+    өөрийн өндрөөр (container query) шийднэ: богинод зөвхөн нэр, өндөр болох
+    тусам цаг, үйлчилгээ, үнэ нэмэгдэнэ.
+  */
+  .cal-block {
+    container-type: size;
+  }
+  .cal-body {
+    justify-content: center;
+    padding: 1px 6px 1px 10px;
+  }
+  .cal-time,
+  .cal-item {
+    display: none;
+  }
+  /* Үнэ нь захиалгын блокны өндрөөс үл хамааран үргэлж харагдана. */
+  .cal-price {
+    display: block;
+    position: absolute;
+    right: 5px;
+    bottom: 3px;
+    max-width: calc(100% - 12px);
+    line-height: 1;
+  }
+  @container (min-height: 38px) {
+    .cal-body {
+      justify-content: flex-start;
+      padding-block: 4px;
+    }
+    .cal-time {
+      display: block;
+    }
+  }
+  @container (min-height: 56px) {
+    .cal-item {
+      display: block;
+    }
+  }
+  @container (max-height: 32px) {
+    .cal-customer {
+      display: none;
+    }
+    .cal-price {
+      top: 50%;
+      bottom: auto;
+      transform: translateY(-50%);
+    }
+  }
+
+  /* Narrow staff columns keep the customer name readable; actions remain in
+     the booking sheet, which opens by tapping the block. */
+  @container (max-width: 110px) {
+    .cal-body {
+      padding-inline: 5px 2px;
+    }
+    .cal-body > span {
+      padding-right: 0;
+    }
+    .cal-body button {
+      display: none;
+    }
+    .cal-body > span > span {
+      font-size: 10px;
+    }
+    .cal-time {
+      padding-right: 16px;
+    }
+  }
+
+  /* Section eyebrow */
+  .eyebrow {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--primary);
+  }
+
+  /*
+    Namuu товчнууд — эх салоны товчтой ижил хэв маяг: бөөрөнхий, дүүрэн
+    сарнай өнгө, цагаан бичиг, зөөлөн сүүдэр. Хоёрдогч нь зөөлөн ягаан.
+    Хоёулаа 44px-ээс багагүй өндөртэй.
+  */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 3rem;
+    padding: 0 1.75rem;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease,
+      box-shadow 0.25s ease,
+      transform 0.25s ease;
+  }
+  .btn:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn-primary {
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 1px 2px rgba(59, 43, 44, 0.08), 0 8px 20px -10px rgba(162, 92, 100, 0.6);
+  }
+  .btn-primary:hover {
+    background: var(--primary-hover);
+  }
+  .btn-soft {
+    background: var(--primary-soft);
+    color: var(--primary);
+  }
+  .btn-soft:hover {
+    background: color-mix(in srgb, var(--primary-soft) 70%, var(--accent));
+    color: var(--primary-hover);
+  }
+  .btn-white {
+    background: #fff;
+    color: var(--primary);
+    box-shadow: 0 8px 20px -12px rgba(59, 43, 44, 0.45);
+  }
+  .btn-white:hover {
+    background: var(--primary-soft);
+  }
+
+  /* Жишээ (баталгаажаагүй) мэдээллийг тэмдэглэх жижиг шошго */
+  .demo-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    border-radius: 999px;
+    border: 1px dashed color-mix(in srgb, var(--accent-ink) 55%, transparent);
+    padding: 0.125rem 0.55rem;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--accent-ink);
+    white-space: nowrap;
+  }
+
+  /* Нарийн champagne зураас — гарчгийн чимэглэл */
+  .rule {
+    display: block;
+    height: 1px;
+    width: 3rem;
+    background: var(--accent);
+  }
+}
+
+/* Thin scrollbar for a tidy feel */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up { animation: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+
+/*
+  Гар утсанд бүх талбар 16px. Үүнээс жижиг байвал iOS Safari талбар дээр
+  дарахад дэлгэцийг автоматаар томруулж, хэрэглэгчийг гар аргаар буцааж
+  жижигрүүлэхэд хүргэдэг — цаг захиалгын урсгалыг хамгийн их эвддэг алдаа.
+  Энэ дүрэм @layer-ээс гадуур тул Tailwind-ийн `text-sm`-ийг давж ажиллана.
+*/
+@media (max-width: 639px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
